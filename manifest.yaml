@@ -1,58 +1,266 @@
-resources:
-- name: my-container-deployment-my-container-vm
-  properties:
-    disks:
-    - autoDelete: true
-      boot: true
-      deviceName: boot
-      initializeParams:
-        diskName: my-container-deployment-my-container-vm-disk
-        sourceImage: https://www.googleapis.com/compute/v1/projects/cos-cloud/global/images/family/cos-stable
-      type: PERSISTENT
-    machineType: https://www.googleapis.com/compute/v1/projects/amcoder/zones/us-east1-b/machineTypes/n1-standard-1
-    metadata:
-      items:
-      - key: gce-container-declaration
-        value: |-
-          # Copyright 2016 Google Inc. All rights reserved.
-          #
-          # Licensed under the Apache License, Version 2.0 (the "License");
-          # you may not use this file except in compliance with the License.
-          # You may obtain a copy of the License at
-          #
-          #     http://www.apache.org/licenses/LICENSE-2.0
-          #
-          # Unless required by applicable law or agreed to in writing, software
-          # distributed under the License is distributed on an "AS IS" BASIS,
-          # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-          # See the License for the specific language governing permissions and
-          # limitations under the License.
+config:
+  content: |-
+    # Copyright 2016 Google Inc. All rights reserved.
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #     http://www.apache.org/licenses/LICENSE-2.0
+    #
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
 
-          # This is a container manifest, as described here:
-          #   https://cloud.google.com/compute/docs/containers/container_vms
-          apiVersion: v1
-          kind: Pod
-          metadata:
-            name: amcoder-term
-          spec:
-            containers:
-              - name: amcoder-term
-                image: gcr.io/amcoder/amcoder-term:latest
-                imagePullPolicy: Always
-                ports:
-                  - containerPort: 8080
-                    hostPort: 8080
-                  - containerPort: 3000
-                    hostPort: 3000
-    networkInterfaces:
-    - accessConfigs:
-      - name: external-nat
-        type: ONE_TO_ONE_NAT
-      network: https://www.googleapis.com/compute/v1/projects/amcoder/global/networks/default
-    serviceAccounts:
-    - email: default
-      scopes:
-      - https://www.googleapis.com/auth/logging.write
-      - https://www.googleapis.com/auth/monitoring.write
-    zone: us-east1-b
-  type: compute.v1.instance
+    imports:
+    - path: container_manifest.yaml
+      name: container_manifest
+    - path: container_vm.py
+
+    resources:
+      - name: my-container-vm
+        type: container_vm.py
+        properties:
+          zone: us-east1-b
+          containerImage: family/cos-stable
+          containerManifest: container_manifest
+expandedConfig: |
+  resources:
+  - name: my-container-deployment-my-container-vm
+    properties:
+      disks:
+      - autoDelete: true
+        boot: true
+        deviceName: boot
+        initializeParams:
+          diskName: my-container-deployment-my-container-vm-disk
+          sourceImage: https://www.googleapis.com/compute/v1/projects/cos-cloud/global/images/family/cos-stable
+        type: PERSISTENT
+      machineType: https://www.googleapis.com/compute/v1/projects/amcoder/zones/us-east1-b/machineTypes/n1-standard-1
+      metadata:
+        items:
+        - key: gce-container-declaration
+          value: |-
+            # Copyright 2016 Google Inc. All rights reserved.
+            #
+            # Licensed under the Apache License, Version 2.0 (the "License");
+            # you may not use this file except in compliance with the License.
+            # You may obtain a copy of the License at
+            #
+            #     http://www.apache.org/licenses/LICENSE-2.0
+            #
+            # Unless required by applicable law or agreed to in writing, software
+            # distributed under the License is distributed on an "AS IS" BASIS,
+            # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            # See the License for the specific language governing permissions and
+            # limitations under the License.
+
+            # This is a container manifest, as described here:
+            #   https://cloud.google.com/compute/docs/containers/container_vms
+            apiVersion: v1
+            kind: Pod
+            metadata:
+              name: amcoder-term
+            spec:
+              containers:
+                - name: amcoder-term
+                  image: gcr.io/amcoder/amcoder-term:latest
+                  imagePullPolicy: Always
+                  ports:
+                    - containerPort: 8080
+                      hostPort: 8080
+                    - containerPort: 3000
+                      hostPort: 3000
+      networkInterfaces:
+      - accessConfigs:
+        - name: external-nat
+          type: ONE_TO_ONE_NAT
+        network: https://www.googleapis.com/compute/v1/projects/amcoder/global/networks/default
+      serviceAccounts:
+      - email: default
+        scopes:
+        - https://www.googleapis.com/auth/logging.write
+        - https://www.googleapis.com/auth/monitoring.write
+      zone: us-east1-b
+    type: compute.v1.instance
+id: '8753851072873526035'
+imports:
+- content: |-
+    # Copyright 2016 Google Inc. All rights reserved.
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #     http://www.apache.org/licenses/LICENSE-2.0
+    #
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+
+    # This is a container manifest, as described here:
+    #   https://cloud.google.com/compute/docs/containers/container_vms
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: amcoder-term
+    spec:
+      containers:
+        - name: amcoder-term
+          image: gcr.io/amcoder/amcoder-term:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              hostPort: 8080
+            - containerPort: 3000
+              hostPort: 3000
+  name: container_manifest
+- content: |-
+    # Copyright 2016 Google Inc. All rights reserved.
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #     http://www.apache.org/licenses/LICENSE-2.0
+    #
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+
+    info:
+      title: Container VM
+      author: Google Inc.
+      description: Creates a Container VM with the provided Container manifest.
+
+    required:
+      - zone
+      - containerImage
+      - containerManifest
+
+    properties:
+      zone:
+        description: Zone in which this VM will run
+        type: string
+      containerImage:
+        description: Name of the Google Cloud Container VM Image
+        type: string
+      containerManifest:
+        description: String containing the Container Manifest in YAML
+        type: string
+  name: container_vm.py.schema
+- content: |
+    # Copyright 2016 Google Inc. All rights reserved.
+    #
+    # Licensed under the Apache License, Version 2.0 (the "License");
+    # you may not use this file except in compliance with the License.
+    # You may obtain a copy of the License at
+    #
+    #     http://www.apache.org/licenses/LICENSE-2.0
+    #
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+
+    """Creates a Container VM with the provided Container manifest."""
+
+    COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
+
+
+    def GlobalComputeUrl(project, collection, name):
+        return ''.join([COMPUTE_URL_BASE, 'projects/', project,
+                        '/global/', collection, '/', name])
+
+
+    def ZonalComputeUrl(project, zone, collection, name):
+        return ''.join([COMPUTE_URL_BASE, 'projects/', project,
+                        '/zones/', zone, '/', collection, '/', name])
+
+
+    def GenerateConfig(context):
+        """Generate configuration."""
+
+        res = []
+        base_name = (context.env['deployment'] + '-' +
+                     context.env['name'])
+
+        # Properties for the container-based instance.
+        instance = {
+            'zone': context.properties['zone'],
+            'machineType': ZonalComputeUrl(context.env['project'],
+                                           context.properties['zone'],
+                                           'machineTypes',
+                                           'n1-standard-1'),
+            'metadata': {
+                'items': [{
+                    'key': 'gce-container-declaration',
+                    'value': context.imports[
+                        context.properties['containerManifest']],
+                }]
+            },
+            'disks': [{
+                'deviceName': 'boot',
+                'type': 'PERSISTENT',
+                'autoDelete': True,
+                'boot': True,
+                'initializeParams': {
+                    'diskName': base_name + '-disk',
+                    'sourceImage': GlobalComputeUrl('cos-cloud',
+                                                    'images',
+                                                    context.properties[
+                                                        'containerImage'])
+                },
+            }],
+            'networkInterfaces': [{
+                'accessConfigs': [{
+                    'name': 'external-nat',
+                    'type': 'ONE_TO_ONE_NAT'
+                }],
+                'network': GlobalComputeUrl(context.env['project'],
+                                            'networks',
+                                            'default')
+            }],
+            'serviceAccounts': [{
+                'email': 'default',
+                'scopes': [
+                    "https://www.googleapis.com/auth/logging.write",
+                    "https://www.googleapis.com/auth/monitoring.write"
+                ]
+            }]
+        }
+        res.append({
+            'name': base_name,
+            'type': 'compute.v1.instance',
+            'properties': instance
+        })
+        # Resources to return.
+        resources = {
+            'resources': res,
+        }
+
+        return resources
+  name: container_vm.py
+insertTime: '2022-01-14T11:24:44.584-08:00'
+layout: |
+  resources:
+  - name: my-container-vm
+    properties:
+      containerImage: family/cos-stable
+      containerManifest: container_manifest
+      zone: us-east1-b
+    resources:
+    - name: my-container-deployment-my-container-vm
+      type: compute.v1.instance
+    type: container_vm.py
+manifestSizeBytes: '2592'
+manifestSizeLimitBytes: '2097152'
+name: manifest-1642188284555
+selfLink: https://www.googleapis.com/deploymentmanager/v2/projects/amcoder/global/deployments/my-container-deployment/manifests/manifest-1642188284555
